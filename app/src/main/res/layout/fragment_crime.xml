@@ -29,7 +29,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text= "Wed Nov 14 11:56 EST 2018"/>
-    <!--    changed from "tools" to "android" -> line above this comment      -->
 
     <CheckBox
         android:id= "@+id/crime_solved"

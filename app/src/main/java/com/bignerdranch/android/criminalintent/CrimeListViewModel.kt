@@ -2,10 +2,12 @@ package com.bignerdranch.android.criminalintent
 
 import androidx.lifecycle.ViewModel
 
-//Remember using a ViewModel Because this isnt destroyed until the activity is destroyed regardless of rotation
-class CrimeListViewModel : ViewModel() {
 
+//ViewModel Used to Hold UI Data
+class CrimeListViewModel : ViewModel(){
+    //Getting our SingleTon To talk with the Data Base
     private val crimeRepository = CrimeRepository.get()
-    val crimes = crimeRepository.getCrimes()
 
+    //Getting the List of Crimes From the Data Base
+    val crimeListLiveData = crimeRepository.getCrimes()
 }

@@ -2,16 +2,12 @@ package com.bignerdranch.android.criminalintent
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.UUID
+import java.util.Date
 
-//Defining This Model Class as a Database Entity
-
-
+//ENTITY CLASS USED TO DEFINE HASH TABLE ROWS AND COLUMNS
 @Entity
-//Creating a Data class with initial values for all variables
-data class Crime (@PrimaryKey var id: UUID = UUID.randomUUID(),
-                  var title: String = "",
-                  var date: Date = Date(),
-                  var isSolved: Boolean = false)
-{
-}
+data class Crime(@PrimaryKey val id : UUID = UUID.randomUUID(),
+                 var title: String = "",
+                 var date : Date = Date(),
+                 var isSolved : Boolean = false)

@@ -2,11 +2,13 @@ package com.bignerdranch.android.criminalintent
 
 import android.app.Application
 
-class CriminalIntentApplication: Application() {
 
+
+//Used to Initialize the Crime Repository
+class CriminalIntentApplication : Application(){
     override fun onCreate() {
         super.onCreate()
-        //Used to Initialize the Repository SingleTon
+        //SINGLETON
         CrimeRepository.initialize(this)
     }
 }

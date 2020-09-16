@@ -19,6 +19,7 @@ class CrimeRepository private constructor(context: Context){
     ).build()
     private val crimeDao = database.crimeDao()
 
+    //Updating methods to return LiveData from its query functions
     fun getCrimes() : LiveData<List<Crime>> = crimeDao.getCrimes()
 
     fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)

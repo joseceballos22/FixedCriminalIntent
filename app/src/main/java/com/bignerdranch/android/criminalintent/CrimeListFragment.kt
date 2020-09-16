@@ -16,6 +16,12 @@ import android.text.format.DateFormat
 import androidx.lifecycle.Observer
 import java.util.*
 
+/**
+ * Side Notes:
+ *  - A Fragment's view lifecycle is owned and tracked separately by FragmentViewLifecycleOwner
+ *  Each Fragment has an instance of FragmentViewLifecycleOwner that keeeps track of the lifecycle of that fragment's view 
+ * */
+
 
 private const val TAG = "CrimeListFragment"
 
@@ -23,6 +29,8 @@ private const val TAG = "CrimeListFragment"
 class CrimeListFragment : Fragment() {
 
     private lateinit var crimeRecyclerView: RecyclerView
+    //Since the fragment will have to wait for results from the database before it can populat ethe recycler view with crimes
+    //It Initially starts with an empty list
     private var adapter: CrimeAdapter? = CrimeAdapter(emptyList())
 
     private val crimeListViewModel: CrimeListViewModel by lazy {
@@ -48,6 +56,14 @@ class CrimeListFragment : Fragment() {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        /**
+        * LiveData.observe(LifeCycleOwner, Observer) function is used to register an observer on the LiveData instance and tie the life of the observation
+        * To the life of another component , such as an activity or fragment
+         * The second parameter to the observation(..) function is an Observer implementation. This object is responsible for reacting to new data from the LiveData
+         * The LifecycleOwner parameter the lifetime of the Observer you provide is scoped to the lifetime of the Android component represented
+         * by the Lifecycle Owner you provided
+         * As long as the lifecycle owner you scope your observer to is in a valid lifecycle state
+         * */
         crimeListViewModel.crimeListLiveData.observe(
             viewLifecycleOwner,
             Observer{ crimes ->

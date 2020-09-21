@@ -49,6 +49,9 @@ class CrimeListFragment : Fragment() {
         //Getting our Recycler View
         crimeRecyclerView =
             view.findViewById(R.id.crime_recycler_view) as RecyclerView
+
+        //Giving Recycler View A LayoutManager IT REQUIRES IT TO WORK CORRECTLY
+        //Layout Manager psoitions every item("widget") and also defines how scrolling works
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
         crimeRecyclerView.adapter = adapter
@@ -80,6 +83,8 @@ class CrimeListFragment : Fragment() {
     }
 
     //Recycler View Needs a Crime Holder
+    //It expects an Item View to be wrapped in an instance of View Holder
+    //View Holder - stores a reference to an item's view and sometimes references to specific widgets within that view
     private inner class CrimeHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
         //PRIVATE DATA FIELDS
@@ -97,6 +102,7 @@ class CrimeListFragment : Fragment() {
         init {
             itemView.setOnClickListener(this)
         }
+        //The base ViewHolder class will hold onTo the view in a property named item view
 
         fun bind(crime: Crime) {
             this.crime = crime
@@ -118,9 +124,14 @@ class CrimeListFragment : Fragment() {
         }
     }
     // Recycler View needs A Crime Adapter
+    //Recycler View Does not create ViewHolders itself Instead it ask an Adapter
+    //An Adapter is a controller object that sits between the RecyclerView And the data set that the RecyclerView should display
+    //Responsible for: Creating the necessary View Holder when asked
+    //Binding ViewHolders to data from the model layer when asked
     private inner class CrimeAdapter(var crimes: List<Crime>) :
         RecyclerView.Adapter<CrimeHolder>() {
 
+        //Creating a ViewHolder
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
                 : CrimeHolder {
             val view = layoutInflater.inflate(R.layout.list_item_crime, parent, false)
@@ -128,6 +139,8 @@ class CrimeListFragment : Fragment() {
             return CrimeHolder(view)
         }
 
+        //Getting the Data to store it in a ViewHolder and Binding them together
+        //KEEP THIS SMALL So scroll animation feels smooth
         override fun onBindViewHolder(holder: CrimeHolder, position: Int) {
             val crime = crimes[position]
             holder.bind(crime)

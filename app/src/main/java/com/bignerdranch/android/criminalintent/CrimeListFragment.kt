@@ -1,5 +1,6 @@
 package com.bignerdranch.android.criminalintent
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -25,8 +26,60 @@ import java.util.*
 
 private const val TAG = "CrimeListFragment"
 
+/**
+ * With the Callbacks Interface CrimeListFragment now has a way to call functions on its hosting activity
+ * Regardless of which activity is doing the hosting
+ * As long as the activity implements CrimeListFragment.Callbacks
+ * */
+
+
 //Fragment for Our list Eventually Will link Both Fragments UP
 class CrimeListFragment : Fragment() {
+
+
+
+    /**
+     * Doing it this way so that Fragments Remain Independent And MainActivity Handles The Switching Between Fragments
+     * Required Interface For Hosting Activity
+     * Using a Callback Interface to delegate on-click events from CrimeListFragment
+     * back to its hosting activity
+     * */
+
+    interface Callbacks
+    {
+        //Method Used by Hosting Activity to Switch Between Fragments depending on user input
+        fun onCrimeSelected(crimeId: UUID)
+    }
+
+    //Variable Used to Know if a CallBack Occured
+    private var callbacks: Callbacks? = null
+
+    /**
+     * Overriding LifeCycle Functions
+     * This is called when a fragment is attached to an activity
+     * Here you stash the Context Argument passed in your callbacks Property
+     *
+     * */
+    override fun onAttach(context: Context)
+    {
+        super.onAttach(context)
+
+        //This ensures THAT The hosting Activity MUST Implement
+        //CrimeListFragment.Callbacks Since we are type Casting the Context Which is the Hosting Activity
+        callbacks = context as Callbacks?
+    }
+
+    /**
+     * This LifeCycle Function
+     * You set the variable to null here because afterward you cannot access the activity or count on the activity continuing to exist
+     *
+     */
+
+    override fun onDetach() {
+        super.onDetach()
+        callbacks = null
+    }
+
 
     private lateinit var crimeRecyclerView: RecyclerView
     //Since the fragment will have to wait for results from the database before it can populat ethe recycler view with crimes
@@ -118,9 +171,13 @@ class CrimeListFragment : Fragment() {
             }
         }
 
+        /***
+         * Updating the clcik listener for individual items in the crime list
+         * so that pressing a crime notifies the hosting activity via the Callbacks interface
+         */
+
         override fun onClick(v: View) {
-            Toast.makeText(context, "${crime.title} pressed!", Toast.LENGTH_SHORT)
-                .show()
+            callbacks?.onCrimeSelected(crime.id)
         }
     }
     // Recycler View needs A Crime Adapter

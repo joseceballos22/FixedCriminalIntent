@@ -3,6 +3,7 @@ package com.bignerdranch.android.criminalintent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +11,22 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import java.util.*
 
+
+/**
+ * Using Fragment Arguments to Pass data between hosting Activity and Fragment
+ * Fragment Arguments allow you to stash pieces of data in "Argument Bundles" that belong to the fragment
+ * MUST BE DONE After Fragment Created And Before Added TO Activity
+ * Creating a newInstance() Function so that this function creates the fragment instance
+ * And Bundles up and sets its arguments
+ * */
+
+//Used To Log and ensure we are getting the Correct ID from Argument Bundle
+private const val TAG = "CrimeFragment"
+
+//Used for Argument Bundle
+private const val ARG_CRIME_ID = "crime_id"
 
 //Fragment Class Used so that UI Flexible
 class CrimeFragment : Fragment() {
@@ -20,9 +36,49 @@ class CrimeFragment : Fragment() {
     private lateinit var dateButton : Button
     private lateinit var solvedCheckBox : CheckBox
 
+
+    /**
+     * When MainActivity needs to Create a CrimeFragment
+     * Instead of creating a Default one we call the
+     * CrimeFragment().newInstance Static method which will
+     * Create the Object and Create a Argument Bundle
+     * Pass it to the CrimeFragment Object and return it
+     * Note the Bundle has the crimeId Since newInstance Passes
+     * the crimeId from the MainActivity to the newly created CrimeFragment
+     * */
+
+    companion object
+    {
+        fun newInstance(crimeId: UUID): CrimeFragment
+        {
+            val args = Bundle().apply {
+                putSerializable(ARG_CRIME_ID, crimeId)
+            }
+            return CrimeFragment().apply {
+                arguments = args
+            }
+        }
+
+
+
+    }
+
+    /**
+     * Getting the Arguments from the Argument Bundle of this Fragment
+     * The argument we want is the Crime ID which was saved in its Bundle
+     *
+     * */
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         crime = Crime()
+
+        //Getting the crimeId from the Argument Bundle
+        val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
+
+        Log.d(TAG, "args Bundle Crime ID: $crimeId")
+
+        //Loading the CrimeID From the Data Base
     }
     //Method Where We inflate our Fragment View
     override fun onCreateView(inflater : LayoutInflater,

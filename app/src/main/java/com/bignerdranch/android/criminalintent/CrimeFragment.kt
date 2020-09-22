@@ -11,6 +11,9 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import java.util.*
 
 
@@ -35,6 +38,12 @@ class CrimeFragment : Fragment() {
     private lateinit var titleField : EditText
     private lateinit var dateButton : Button
     private lateinit var solvedCheckBox : CheckBox
+
+    //Creating a ViewModel to get data from Data base reason a viewModel
+    //Is so that it wont change on Rotations Also the view model handles getting and returning the data from database
+    private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
+        ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
+    }
 
 
     /**
@@ -76,10 +85,46 @@ class CrimeFragment : Fragment() {
         //Getting the crimeId from the Argument Bundle
         val crimeId: UUID = arguments?.getSerializable(ARG_CRIME_ID) as UUID
 
-        Log.d(TAG, "args Bundle Crime ID: $crimeId")
 
-        //Loading the CrimeID From the Data Base
+        //Loading the CrimeID From the Data Base using a view model
+        //And the Correct CrimeID For implementation look at CrimeDetailViewModel
+        crimeDetailViewModel.loadCrime(crimeId)
+
     }
+
+    /**
+     *
+     * */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //Using Observers Dont know what they do
+
+        /**
+         * Be Sure to Import androidx.lifecycle.Observer
+         * */
+
+        crimeDetailViewModel.crimeLiveData.observe(
+            viewLifecycleOwner, Observer {
+                crime?.let {
+                    this.crime = crime
+                    updateUI()
+                }
+            }
+       )
+    }
+
+    /**
+     *
+     * */
+    private fun updateUI()
+    {
+        titleField.setText(crime.title)
+        dateButton.text = crime.date.toString()
+        solvedCheckBox.isChecked = crime.isSolved
+    }
+
+
     //Method Where We inflate our Fragment View
     override fun onCreateView(inflater : LayoutInflater,
                              container : ViewGroup?,

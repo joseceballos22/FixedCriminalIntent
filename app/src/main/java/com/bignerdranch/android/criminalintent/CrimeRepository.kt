@@ -6,6 +6,7 @@ import androidx.room.Room
 import database.CrimeDatabase
 import java.lang.IllegalStateException
 import java.util.*
+import java.util.concurrent.Executors
 
 private const val DATABASE_NAME = "crime-database"
 
@@ -35,10 +36,43 @@ class CrimeRepository private constructor(context: Context){
     //Defining the Data Access Object All this is created from the ROOM Compiler
     private val crimeDao = database.crimeDao()
 
+    /**
+     * An Executor is an object that references a thread
+     * an executor instance has a function called execute that accepts a block of code to run
+     * The code you provide in the block will run on whatever thread the executor points to
+     * newSingleThreadExecutor() function returns an executor instance that points to a new thread
+     * Therefore any work you execute with the executor will therefore happen off the main Thread
+     * */
+    private val executor = Executors.newSingleThreadExecutor()
+
+
     //Updating methods to return LiveData from its query functions
     fun getCrimes() : LiveData<List<Crime>> = crimeDao.getCrimes()
 
     fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)
+
+
+    /**Functions Used to Update the crime in the data base
+     * Using an Executor so that the code runs in a background thread
+     * */
+    fun updateCrime(crime: Crime)
+    {
+        executor.execute{
+            crimeDao.updateCrime(crime)
+        }
+
+    }
+
+    /**Function that adds a crime to the Database
+     * Using an Executor so that the code runs in a background thread */
+    fun addCrime(crime: Crime)
+    {
+        executor.execute {
+            crimeDao.addCrime(crime)
+        }
+
+    }
+
 
     //Defining the SingleTON
     companion object {

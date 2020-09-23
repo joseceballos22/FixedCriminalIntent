@@ -2,7 +2,9 @@ package database
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.bignerdranch.android.criminalintent.Crime
 import java.util.*
 
@@ -32,4 +34,16 @@ interface CrimeDao {
     //@Query indicates that the function are meatn to pull info out of the database Rather than Inserting , updating or deleting
     @Query("SELECT * FROM crime WHERE id=(:id)")
     fun getCrime(id: UUID): LiveData<Crime?>
+
+    //Function to Update an Existing Crime After the User Edits it Room will define the code for it
+    //Takes in a  crime Object, uses the ID stored in that crime to find the associated row, and
+    //Then updates the data in that row based on the new data in the crime object
+    @Update
+    fun updateCrime(crime: Crime)
+
+    //Function that Will Insert a New Crime to Database Room will define the code for it
+    //Adds a crime to the database Table NEEDS @Insert Annotation
+    @Insert
+    fun addCrime(crime: Crime)
+
 }

@@ -63,4 +63,22 @@ class CrimeDetailViewModel() : ViewModel() {
     }
 
 
+    /**Adding a Function to save a crime object to the database after the user has modified it
+     * Accepts a Crime and Writes it to the DataBase using SINGLETON CrimeRepository Update method
+     *
+     * Since CrimeRepository handles running the update request on a background thread
+     *
+     * */
+    fun saveCrime(crime: Crime)
+    {
+        crimeRepository.updateCrime(crime)
+    }
+
+
+
+
+
+
+
+
 }

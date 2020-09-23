@@ -34,6 +34,7 @@ private const val ARG_CRIME_ID = "crime_id"
 //Fragment Class Used so that UI Flexible
 class CrimeFragment : Fragment() {
 
+    //THIS Crime Property represents the edits the user is currently making
     private lateinit var crime : Crime
     private lateinit var titleField : EditText
     private lateinit var dateButton : Button
@@ -42,7 +43,7 @@ class CrimeFragment : Fragment() {
     //Creating a ViewModel to get data from Data base reason a viewModel
     //Is so that it wont change on Rotations Also the view model handles getting and returning the data from database
     private val crimeDetailViewModel: CrimeDetailViewModel by lazy {
-        ViewModelProvider(this).get(CrimeDetailViewModel::class.java)
+        ViewModelProviders.of(this).get(CrimeDetailViewModel::class.java)
     }
 
 
@@ -89,39 +90,6 @@ class CrimeFragment : Fragment() {
         //Loading the CrimeID From the Data Base using a view model
         //And the Correct CrimeID For implementation look at CrimeDetailViewModel
         crimeDetailViewModel.loadCrime(crimeId)
-
-    }
-
-    /**
-     *
-     * */
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        //Using Observers Dont know what they do
-
-        /**
-         * Be Sure to Import androidx.lifecycle.Observer
-         * */
-
-        crimeDetailViewModel.crimeLiveData.observe(
-            viewLifecycleOwner, Observer {
-                crime?.let {
-                    this.crime = crime
-                    updateUI()
-                }
-            }
-       )
-    }
-
-    /**
-     *
-     * */
-    private fun updateUI()
-    {
-        titleField.setText(crime.title)
-        dateButton.text = crime.date.toString()
-        solvedCheckBox.isChecked = crime.isSolved
     }
 
 
@@ -142,6 +110,71 @@ class CrimeFragment : Fragment() {
 
         return view
     }
+
+
+
+    /**
+     *CrimeFragment "Publishes" the User's Edits when the fragments moves to the stopped state by writing the
+     * Updated Data to the DataBase
+     * */
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        //Using Observers Dont know what they do
+
+        /**
+         * Be Sure to Import androidx.lifecycle.Observer
+         * */
+
+        crimeDetailViewModel.crimeLiveData.observe(
+            viewLifecycleOwner,
+            Observer {
+                crime ->
+                crime?.let {
+                    this.crime = crime
+                    updateUI()
+                }
+            }
+        )
+    }
+
+    /**
+     * Updates the UI Information of the CrimeFragment Using the Details Accquired from
+     * The User clicking on a specific Crime
+     * */
+    private fun updateUI()
+    {
+        titleField.setText(crime.title)
+        dateButton.text = crime.date.toString()
+
+        /**
+         * Skipping the Check Box Animation to prevent Lag
+         * */
+        //solvedCheckBox.isChecked = crime.isSolved
+
+        solvedCheckBox.apply {
+            isChecked = crime.isSolved
+            jumpDrawablesToCurrentState() //Skips animation
+        }
+    }
+
+    /**
+     * Function used to save the Users Edits after they have edited a crime
+     * It will call the crimeDetailViewModel which will then call its save Crime Which will update the data base
+     *
+     * Fragment.onStop() is called anytime your fragment moves to the stopped state
+     * This means the data will get saved when the user finishes the detail screen
+     * Data will also be saved when the user switches tasks
+     *
+     * */
+    override fun onStop() {
+        super.onStop()
+        crimeDetailViewModel.saveCrime(crime)
+    }
+
+
+
+
     override fun onStart() {
         super.onStart()
 

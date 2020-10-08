@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--This is where the Recycler View Lives on The Root for the CrimeListFragment View-->
+<!--This is where the Recycler View Lives on The Root for the CrimeListFragment View
+    Note Recycler View is a subclass of ViewGroup
+    A View are objects used specifically for drawing content onto the screen of an Android Device
+
+    View Groups is an invisuble object used to contain other view and viewGroup objects in order
+    to organize
+-->
 <androidx.recyclerview.widget.RecyclerView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id= "@+id/crime_recycler_view"

@@ -47,7 +47,11 @@ class CrimeRepository private constructor(context: Context){
 
 
     //Updating methods to return LiveData from its query functions
-    fun getCrimes() : LiveData<List<Crime>> = crimeDao.getCrimes()
+    fun getCrimes() : LiveData<List<Crime>>
+    {
+        return crimeDao.getCrimes()
+    }
+
 
     fun getCrime(id: UUID): LiveData<Crime?> = crimeDao.getCrime(id)
 

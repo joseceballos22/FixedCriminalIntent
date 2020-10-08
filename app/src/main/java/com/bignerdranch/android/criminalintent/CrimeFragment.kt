@@ -25,14 +25,20 @@ import java.util.*
  * And Bundles up and sets its arguments
  * */
 
+//Used to retrieve the date from the DatePickerFragment
+private const val REQUEST_CODE = 0
+
 //Used To Log and ensure we are getting the Correct ID from Argument Bundle
 private const val TAG = "CrimeFragment"
 
 //Used for Argument Bundle
 private const val ARG_CRIME_ID = "crime_id"
 
+//Used to Identify the DatePickerFragment
+private const val DIALOG_DATE = "DialogDate"
+
 //Fragment Class Used so that UI Flexible
-class CrimeFragment : Fragment() {
+class CrimeFragment : Fragment() , DatePickerFragment.Callbacks{
 
     //THIS Crime Property represents the edits the user is currently making
     private lateinit var crime : Crime
@@ -103,10 +109,6 @@ class CrimeFragment : Fragment() {
         dateButton = view.findViewById(R.id.crime_date) as Button
         solvedCheckBox = view.findViewById(R.id.crime_solved) as CheckBox
 
-        dateButton.apply {
-            text = crime.date.toString()
-            isEnabled = false
-        }
 
         return view
     }
@@ -174,7 +176,7 @@ class CrimeFragment : Fragment() {
 
 
 
-
+    /**Method Where you define Listeners */
     override fun onStart() {
         super.onStart()
 
@@ -202,6 +204,27 @@ class CrimeFragment : Fragment() {
             setOnCheckedChangeListener{ _, isChecked ->
                 crime.isSolved = isChecked
             }
+
         }
+
+        /**Creating a DatePicker Fragment (which is a Dialog) wrapped in a Fragment when the User clicks the button  */
+        this.dateButton.setOnClickListener{
+            //Creating the Object using its newInstance static method and storing the date in the argument bundle
+            DatePickerFragment.newInstance(crime.date).apply {
+
+                //Setting the CrimeFragment object created in the MainActivity as the Target of the DatePickerFragment
+                //So when it dies it knows
+                setTargetFragment(this@CrimeFragment, REQUEST_CODE)
+
+                show(this@CrimeFragment.requireFragmentManager(), DIALOG_DATE)
+            }
+        }
+
+    }
+
+    override fun onDateSelected(date: Date) {
+        crime.date = date //Setting the new date the user specified
+        updateUI() //Updating the UI
+
     }
 }

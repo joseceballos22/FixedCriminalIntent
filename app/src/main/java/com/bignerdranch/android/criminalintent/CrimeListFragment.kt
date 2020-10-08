@@ -36,8 +36,6 @@ private const val TAG = "CrimeListFragment"
 //Fragment for Our list Eventually Will link Both Fragments UP
 class CrimeListFragment : Fragment() {
 
-
-
     /**
      * Doing it this way so that Fragments Remain Independent And MainActivity Handles The Switching Between Fragments
      * Required Interface For Hosting Activity
@@ -97,18 +95,20 @@ class CrimeListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
+        //Getting the Fragments View
         val view = inflater.inflate(R.layout.fragment_crime_list, container, false)
 
         //Getting our Recycler View
-        crimeRecyclerView =
-            view.findViewById(R.id.crime_recycler_view) as RecyclerView
+        crimeRecyclerView = view.findViewById(R.id.crime_recycler_view) as RecyclerView
 
         //Giving Recycler View A LayoutManager IT REQUIRES IT TO WORK CORRECTLY
-        //Layout Manager psoitions every item("widget") and also defines how scrolling works
+        //Layout Manager Positions every item("widget") and also defines how scrolling works
         crimeRecyclerView.layoutManager = LinearLayoutManager(context)
 
         crimeRecyclerView.adapter = adapter
-        return view
+
+        return view //Returning Our View
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

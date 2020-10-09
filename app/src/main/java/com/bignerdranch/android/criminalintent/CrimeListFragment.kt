@@ -3,9 +3,6 @@ package com.bignerdranch.android.criminalintent
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateFormat
+import android.view.*
 import androidx.lifecycle.Observer
 import java.util.*
 
@@ -51,6 +49,46 @@ class CrimeListFragment : Fragment() {
 
     //Variable Used to Know if a CallBack Occured
     private var callbacks: Callbacks? = null
+
+
+    /**Overriding the method to inflate the menu defined in fragment_crime_list.xml
+     *
+     * The FragmentManager will be responsible for calling this method
+     * */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+
+        inflater.inflate(R.menu.fragment_crime_list, menu)
+    }
+
+    /**Used to respond to Action Item Selected by User Since this method is called when ever a Action Item is pressed
+     *
+     * Will Create a New Crime
+     * And Add it to the Data Base
+     * And then notify the parent activity that the crime has been selected
+     * */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        //If the action item selected is the + to create a new Crime then create a Crime object and tell the activity to go to that New Crime object
+        return when (item.itemId)
+        {
+            R.id.new_crime->{
+                val crime = Crime()
+                crimeListViewModel.addCrime(crime)
+                callbacks?.onCrimeSelected(crime.id)
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+    }
+
+
+    /**When Activity recieves its onCreateOptionsMenu callback from the OS WE MUST
+     * Let the Fragment Manger know that it will receive a call to onCreateOptionMenu */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true) //Lets Fragment Manger know that it will recieve a call to onCreateOptionsMenu
+    }
+
 
     /**
      * Overriding LifeCycle Functions
